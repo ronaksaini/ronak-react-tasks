@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; // Import Firestore instance from firebase.js
 import './ToDoList.css';
 import { collection, query, where, getDocs, addDoc, updateDoc, doc, deleteDoc } from "firebase/firestore"; 
-import { getAuth, signOut } from 'firebase/auth'; // Import getAuth to get the current user
+import { getAuth, signOut } from 'firebase/auth'; 
 import { useNavigate } from 'react-router-dom';
 
 const ToDoList = () => {
@@ -18,7 +18,7 @@ const ToDoList = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [editFormData, setEditFormData] = useState({});
 
-  const auth = getAuth(); // Initialize the authentication instance
+  const auth = getAuth(); 
   const navigate = useNavigate();
   
   const handleChange = (e) => {
@@ -33,14 +33,13 @@ const ToDoList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const user = auth.currentUser; // Get the current user
+      const user = auth.currentUser; 
       if (user) {
-        const taskData = { ...formData, userId: user.uid }; // Associate task with user ID
-        await addDoc(collection(db, "tasks"), taskData); // Add task to Firestore
+        const taskData = { ...formData, userId: user.uid }; 
+        await addDoc(collection(db, "tasks"), taskData); 
         alert("Task added successfully");
         setFormData({ title: "", desc: "", due: "", prior:"Low" });
       } else {
-        // No user is logged in, handle accordingly
         alert("Please log in to add a task.");
         navigate('/login');
       }
@@ -50,17 +49,14 @@ const ToDoList = () => {
   };
 
   useEffect(() => {
-    // Subscribe to auth state changes to get the current user
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        // Fetch tasks for the current user
         fetchTasks(user.uid);
       } else {
-        setTasks([]); // Clear tasks if no user is authenticated
+        setTasks([]);
       }
     });
   
-    // Cleanup function (unsubscribe from auth state changes)
     return unsubscribe;
   }, [auth, tasks]); 
 
@@ -95,7 +91,7 @@ const ToDoList = () => {
 
   const handleDelete = async (taskId) => {
     try {
-      await deleteDoc(doc(db, "tasks", taskId)); // Delete the task document from Firestore
+      await deleteDoc(doc(db, "tasks", taskId)); 
       // Remove the deleted task from the local state
       setTasks(tasks.filter(task => task.id !== taskId));
       alert("Task deleted successfully");
@@ -107,8 +103,7 @@ const ToDoList = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await updateDoc(doc(db, "tasks", editFormData.id), editFormData); // Update the task document in Firestore
-      // Update the task in the local state
+      await updateDoc(doc(db, "tasks", editFormData.id), editFormData);
       setTasks(tasks.map(task => task.id === editFormData.id ? { ...task, ...editFormData } : task));
       alert("Task updated successfully");
       setEditFormData({}); // Reset the edit form data
