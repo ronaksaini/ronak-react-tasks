@@ -13,7 +13,6 @@ const Login = () => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-          // Redirect or show success message
           alert("Logged in successfully")
           navigate('/to-do-list')
         } catch (error) {
