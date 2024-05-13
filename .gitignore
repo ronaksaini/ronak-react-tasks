@@ -4,7 +4,10 @@
 /node_modules
 /.pnp
 .pnp.js
-
+/src/components/Task1
+/src/components/Task2
+/src/components/Task3
+/src/components/Task4
 # testing
 /coverage
 
